@@ -5,19 +5,19 @@ export default async function handler(req, res) {
 
   const { completedCount, totalCount, todos } = req.body;
 
-  const todoList = todos
-    .map((t) => `- [${t.done ? "완료" : "미완료"}] ${t.text}`)
-    .join("\n");
+  const doneTodos = todos.filter((t) => t.done).map((t) => t.text);
+  const pendingTodos = todos.filter((t) => !t.done).map((t) => t.text);
 
-  const prompt = `당신은 사용자의 하루 생산성을 응원하는 따뜻한 코치입니다.
-아래는 사용자의 할 일 목록입니다:
+  const prompt = `당신은 사용자의 하루를 응원하는 따뜻한 코치입니다.
 
-${todoList}
+완료한 할 일: ${doneTodos.length > 0 ? doneTodos.join(", ") : "없음"}
+아직 남은 할 일: ${pendingTodos.length > 0 ? pendingTodos.join(", ") : "없음"}
 
-전체 ${totalCount}개 중 ${completedCount}개를 완료했습니다.
-
-딱 한 문장으로 격려 또는 조언 피드백을 한국어로 작성해주세요.
-이모지를 1개 포함하고, 구체적이고 따뜻하게 써주세요.`;
+규칙:
+1. 완료한 할 일 중 한 가지를 직접 언급하며 칭찬해주세요.
+2. 딱 한 문장, 이모지 1개 포함.
+3. 숫자("4개" 등)는 쓰지 말고, 구체적인 활동 이름을 사용해주세요.
+4. 자연스러운 한국어로 작성해주세요.`;
 
   try {
     const response = await fetch("https://api.deepseek.com/chat/completions", {
