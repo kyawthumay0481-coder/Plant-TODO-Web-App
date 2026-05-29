@@ -3,6 +3,13 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
+  // Origin 체크: 허용된 도메인에서만 호출 가능
+  const origin = req.headers.origin || req.headers.referer || "";
+  const allowed = ["localhost", "127.0.0.1", ".vercel.app"];
+  if (!allowed.some((d) => origin.includes(d))) {
+    return res.status(403).json({ feedback: "오늘도 잘하고 있어요! 💪" });
+  }
+
   const { completedCount, totalCount, todos } = req.body;
 
   const doneTodos = todos.filter((t) => t.done).map((t) => t.text);

@@ -241,6 +241,7 @@ function App() {
     ? [...PLANT_STAGES].reverse().find(s => getRegression(streak) >= s.min)
     : null;
 
+
   return (
     <div className="app">
       <div className="fruit-background">
